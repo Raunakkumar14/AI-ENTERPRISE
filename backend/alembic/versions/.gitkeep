@@ -1,0 +1,3 @@
+# backend/alembic/versions/.gitkeep
+# This file keeps the versions/ directory tracked by git even when empty.
+# Alembic will generate migration files here as you evolve the schema.

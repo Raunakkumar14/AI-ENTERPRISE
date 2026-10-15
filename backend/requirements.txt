@@ -1,0 +1,50 @@
+# ──────────────────────────────────────────────────────────────
+# AI Knowledge Hub — Backend Dependencies
+# Install with:  pip install -r requirements.txt
+# ──────────────────────────────────────────────────────────────
+
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# Database — async SQLAlchemy + asyncpg driver
+sqlalchemy[asyncio]==2.0.30
+asyncpg==0.29.0
+
+# Migrations
+alembic==1.13.1
+
+# Config management (reads .env files)
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
+
+# Vector extension client (pgvector)
+pgvector==0.2.5
+
+# PDF text extraction
+pypdf==5.9.0
+
+# HTTP client (used by AI SDK internals + direct API calls)
+httpx==0.27.0
+
+# ── AI / LLM Clients ──────────────────────────────────────────────────────────
+
+# Groq — ultra-fast inference API (LLaMA 3, Mixtral, Gemma)
+# Docs: https://console.groq.com/docs
+groq==0.9.0
+
+# Google Gemini — multimodal LLM (text + vision)
+# Docs: https://ai.google.dev/gemini-api/docs/quickstart
+google-generativeai==0.7.2
+
+# ── Authentication ────────────────────────────────────────────────────────────
+
+# JWT token creation and verification
+python-jose[cryptography]==3.3.0
+
+# Password hashing (bcrypt)
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+
+# Email validation in Pydantic schemas
+email-validator==2.1.1
