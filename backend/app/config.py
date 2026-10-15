@@ -51,11 +51,11 @@ class Settings(BaseSettings):
     # ── AI / LLM ──────────────────────────────────────────────
     # Groq — set GROQ_API_KEY in .env to enable
     GROQ_API_KEY: str = ""
-    GROQ_MODEL: str = "llama3-70b-8192"
+    GROQ_MODEL: str = "qwen/qwen3.8-27b"
 
     # Google Gemini — set GEMINI_API_KEY in .env to enable
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-1.5-flash"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
     # ── Document ingestion ────────────────────────────────────
     MAX_DOCUMENT_SIZE_MB: int = Field(default=10, gt=0, le=100)

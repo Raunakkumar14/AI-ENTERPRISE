@@ -362,7 +362,9 @@ in the background and is not retained after ingestion.
 
 Answer generation is selectable with `RAG_LLM_PROVIDER=gemini` or `groq`.
 Gemini uses `GEMINI_API_KEY` and `GEMINI_MODEL`; Groq uses `GROQ_API_KEY` and
-`GROQ_MODEL`. Configure `RAG_TOP_K`, `RAG_RELEVANCE_THRESHOLD`,
+`GROQ_MODEL`. The default model IDs are `gemini-2.5-flash` and
+`qwen/qwen3.8-27b`; use model IDs enabled for your provider account.
+Configure `RAG_TOP_K`, `RAG_RELEVANCE_THRESHOLD`,
 `RAG_MAX_CONTEXT_CHARS`, and `RAG_IVFFLAT_PROBES` to tune retrieval.
 
 ### Workspace RAG and conversations
