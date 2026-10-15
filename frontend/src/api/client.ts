@@ -1,5 +1,28 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
-const API_PREFIX = `${API_BASE_URL.replace(/\/$/, '')}/api/v1`;
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const defaultApiBaseUrl = import.meta.env.DEV ? 'http://localhost:8000' : '';
+
+export const API_BASE_URL = normalizeApiBaseUrl(
+  configuredApiBaseUrl || defaultApiBaseUrl,
+);
+const API_PREFIX = API_BASE_URL ? `${API_BASE_URL}/api/v1` : '';
+
+function normalizeApiBaseUrl(value: string): string {
+  return value
+    .replace(/\/+$/, '')
+    .replace(/(?:\/api\/v1)+$/i, '');
+}
+
+export function apiUrl(path: string): string {
+  if (!API_BASE_URL) {
+    throw new Error('VITE_API_BASE_URL must be set for production builds.');
+  }
+
+  const endpoint = path
+    .trim()
+    .replace(/^(?:\/?api\/v1)+(?=\/|$)/i, '')
+    .replace(/^\/+/, '');
+  return endpoint ? `${API_PREFIX}/${endpoint}` : API_PREFIX;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -22,7 +45,7 @@ export async function apiRequest<T>(
   if (init.body && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
   }
-  const response = await fetch(`${API_PREFIX}${path}`, { ...init, headers });
+  const response = await fetch(apiUrl(path), { ...init, headers });
   if (!response.ok) {
     const payload = await response.json().catch(() => null) as {
       error?: { code?: string; message?: string };

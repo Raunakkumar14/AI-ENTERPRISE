@@ -174,6 +174,14 @@ The browser session stores the access token in `sessionStorage`; sign out clears
 Set `VITE_API_BASE_URL` in `frontend/.env.local` if the backend is not at
 `http://localhost:8000`.
 
+For a production Vite build, set `VITE_API_BASE_URL` in
+`frontend/.env.production` or in the frontend hosting provider's build-time
+environment. Set it to the backend origin only (for example,
+`https://your-api.onrender.com`), without `/api/v1`. The frontend adds that API
+prefix itself. Vite embeds this public setting into the browser bundle, so it
+must be present when the frontend is built. Also set `CORS_ORIGINS` on the
+backend to include the exact deployed frontend origin.
+
 The backend CORS defaults permit both `localhost` and `127.0.0.1` for the
 development frontend. If login/register reports a network error, confirm
 `http://127.0.0.1:8000/api/v1/health` responds and that the frontend origin is

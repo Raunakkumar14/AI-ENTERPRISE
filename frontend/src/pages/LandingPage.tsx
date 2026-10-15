@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { API_BASE_URL, apiUrl } from "../api/client";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface HealthData {
@@ -29,8 +30,6 @@ type ApiState =
   | { phase: "error"; message: string };
 
 // ── Constants ────────────────────────────────────────────────────────────────
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
-
 const STACK_BADGES = [
   { label: "FastAPI",       color: "from-teal-500 to-emerald-600",   icon: "⚡" },
   { label: "PostgreSQL",    color: "from-blue-500 to-blue-700",       icon: "🐘" },
@@ -79,7 +78,7 @@ export default function LandingPage() {
   useEffect(() => {
     setApiState({ phase: "loading" });
 
-    fetch(`${API_BASE}/api/v1/health`)
+    fetch(apiUrl("/health"))
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json() as Promise<HealthData>;
@@ -144,7 +143,7 @@ export default function LandingPage() {
                     <span className="inline-block h-3 w-3 rounded-full border-2 border-brand-400 border-t-transparent animate-spin" />
                     Connecting to{" "}
                     <code className="font-mono text-brand-300 text-sm">
-                      {API_BASE}
+                      {API_BASE_URL}
                     </code>
                     …
                   </p>
@@ -176,7 +175,7 @@ export default function LandingPage() {
               </div>
 
               <a
-                href={`${API_BASE}/docs`}
+                href={`${API_BASE_URL}/docs`}
                 target="_blank"
                 rel="noopener noreferrer"
                 id="swagger-link"

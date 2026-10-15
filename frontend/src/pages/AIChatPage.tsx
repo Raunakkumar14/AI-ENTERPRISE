@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, Bot, CheckCircle2, CircleStop, LoaderCircle, MessageSquare, Send, X } from 'lucide-react';
 import Avatar from '../components/ui/Avatar';
-import { apiRequest, workspacePath, type ApiConversation, type ApiDocumentDetail, type ApiMessage } from '../api/client';
+import { apiRequest, apiUrl, workspacePath, type ApiConversation, type ApiDocumentDetail, type ApiMessage } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import type { ChatMessage } from '../types';
 
@@ -115,8 +115,7 @@ export default function AIChatPage() {
     let buffer = '';
     let completed = false;
     try {
-      const baseUrl = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000').replace(/\/$/, '');
-      const response = await fetch(`${baseUrl}/api/v1${workspacePath(workspaceId, '/ask/stream')}`, {
+      const response = await fetch(apiUrl(workspacePath(workspaceId, '/ask/stream')), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
