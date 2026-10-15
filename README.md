@@ -216,9 +216,19 @@ npm run lint
 ```
 
 Live answer generation requires valid provider credentials and outbound network
-access. This repository is currently set up for local development and testing;
-Render deployment configuration will be added separately when you are ready to
-deploy.
+access.
+
+For a Render web service, set the root directory to `backend`, use
+`pip install -r requirements.txt` as the build command, and start with
+`uvicorn app.main:app --host 0.0.0.0 --port $PORT`. Set `DATABASE_URL` in the
+Render environment to the Render PostgreSQL internal URL. Plain `postgres://`
+and `postgresql://` URLs are normalized to the asyncpg driver; an existing
+`postgresql+asyncpg://` URL is preserved. Apply schema migrations with
+`alembic upgrade head` from the backend root before serving requests. The
+document migration enables PostgreSQL's `vector` extension; if your database
+role cannot create extensions, enable `vector` with a database administrator
+before applying migrations. Store all credentials in Render environment
+variables, not in the repository.
 
 ---
 

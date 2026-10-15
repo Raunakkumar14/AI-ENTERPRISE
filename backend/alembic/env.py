@@ -56,7 +56,10 @@ target_metadata = Base.metadata
 # This ensures we always use the same URL as the running application.
 from app.config import settings as app_settings  # noqa: E402
 
-config.set_main_option("sqlalchemy.url", app_settings.DATABASE_URL)
+config.set_main_option(
+    "sqlalchemy.url",
+    app_settings.DATABASE_URL.replace("%", "%%"),
+)
 
 
 # ── Offline mode ─────────────────────────────────────────────────────────────

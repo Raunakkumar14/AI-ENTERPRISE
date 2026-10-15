@@ -6,7 +6,6 @@ All values are read from the .env file (or real environment variables).
 
 Usage:
     from app.config import settings
-    print(settings.DATABASE_URL)
 """
 
 from __future__ import annotations
@@ -75,6 +74,22 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, gt=0)
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def use_asyncpg_driver(cls, value: str) -> str:
+        url = value.strip()
+        scheme, separator, remainder = url.partition("://")
+        normalized_scheme = scheme.lower()
+        if separator and normalized_scheme in {"postgres", "postgresql"}:
+            return f"postgresql+asyncpg://{remainder}"
+        if (
+            separator
+            and normalized_scheme.startswith("postgresql+")
+            and normalized_scheme != "postgresql+asyncpg"
+        ):
+            raise ValueError("PostgreSQL DATABASE_URL must use the asyncpg driver")
+        return url
 
     @field_validator("SECRET_KEY")
     @classmethod

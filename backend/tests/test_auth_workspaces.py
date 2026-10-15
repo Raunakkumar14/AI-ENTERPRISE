@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.config import Settings
 from app.database import get_db
 from app.main import app
 from app.models import Base, User
@@ -75,6 +76,44 @@ async def login(client: AsyncClient, email: str, password: str) -> str:
 
 def auth_header(token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "database_url",
+    [
+        "postgres://render-user:encoded%40pass@db.example:5432/app",
+        "postgresql://render-user:encoded%40pass@db.example:5432/app",
+    ],
+)
+async def test_render_database_url_uses_asyncpg_and_environment_overrides_file(
+    monkeypatch: pytest.MonkeyPatch,
+    database_url: str,
+) -> None:
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setenv(
+        "SECRET_KEY",
+        "test-secret-key-that-is-at-least-32-characters-long",
+    )
+
+    loaded_settings = Settings(_env_file=None)
+    engine = create_async_engine(loaded_settings.DATABASE_URL)
+
+    assert loaded_settings.DATABASE_URL.startswith("postgresql+asyncpg://")
+    assert loaded_settings.DATABASE_URL.endswith("@db.example:5432/app")
+    assert engine.dialect.name == "postgresql"
+    assert engine.dialect.driver == "asyncpg"
+    await engine.dispose()
+
+
+def test_asyncpg_database_url_is_preserved() -> None:
+    loaded_settings = Settings(
+        _env_file=None,
+        DATABASE_URL="postgresql+asyncpg://user:pass@db.example:5432/app",
+        SECRET_KEY="test-secret-key-that-is-at-least-32-characters-long",
+    )
+
+    assert loaded_settings.DATABASE_URL.startswith("postgresql+asyncpg://")
 
 
 @pytest.mark.asyncio
